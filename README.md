@@ -19,6 +19,45 @@
 4. 然后直接点 [Deploy] 接着等部署完成即可
 ```
 
+### Docker执行
+
+#### docker cli
+
+##### 编译
+
+```bash
+docker build -t unilei/aipan-netdisk-search:latest .
+```
+##### 运行
+
+```bash
+docker run -p 3000:3000 unilei/aipan-netdisk-search:latest
+```
+##### 停止
+
+```bash
+docker stop unilei/aipan-netdisk-search:latest
+```
+
+#### Docker-compose
+
+##### 编译
+
+```bash
+docker compose build
+```
+##### 运行
+
+```bash
+docker compose up -d
+```
+
+##### 停止
+
+```bash
+docker compose down
+```
+
 ### 1. 克隆项目
 
 ```bash

@@ -49,9 +49,14 @@ export default defineNuxtConfig({
         '@nuxtjs/tailwindcss',
         '@nuxtjs/device',
         '@nuxtjs/i18n',
-        '@nuxtjs/google-fonts'
+        '@nuxtjs/google-fonts',
+        '@nuxtjs/color-mode'
 
     ],
+    colorMode: {
+        preference: 'light',
+        classSuffix: ''
+    },
     tailwindcss: {
         configPath: 'tailwind.config.js'
     },

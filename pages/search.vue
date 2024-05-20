@@ -65,7 +65,7 @@ const currentTabValue = ref('')
 const page = ref(1)
 const exact = ref(false)
 
-const sources = ref([])
+const sources = ref({})
 const skeletonLoading = ref(true)
 const handleSearchByHunhe = async () => {
   let res = await $fetch('/api/sources/hh/search', {
@@ -90,21 +90,20 @@ const handleSearchByHunhe = async () => {
 }
 
 const search = (e) => {
-  sources.value = []
+  sources.value = {}
   keyword.value = e
   skeletonLoading.value = true
   handleSearchByHunhe()
 }
 
 const handleChangeTab = (e) => {
-  sources.value = []
+  sources.value = {}
   currentTabValue.value = e
   skeletonLoading.value = true
   handleSearchByHunhe()
 }
 
 const handleCurrentPageChange = (e) => {
-  sources.value = []
   page.value = e
   skeletonLoading.value = true
   window.scroll(0, 0)
@@ -114,14 +113,14 @@ const handleCurrentPageChange = (e) => {
 const handleChangeExact = (e) => {
   exact.value = !e
   skeletonLoading.value = true
-  sources.value = []
+  sources.value = {}
   handleSearchByHunhe()
 }
 const handleEngineChange = (e) => {
   currentEngine.value = e
   skeletonLoading.value = true
   latestSkeletonLoading.value = true
-  sources.value = []
+  sources.value = {}
   latestSourcesData.value = []
 
   handleSearchByHunhe()
@@ -161,10 +160,11 @@ onMounted(() => {
   handleSearchByHunhe()
   getLatestSourcesData(1, 10)
 })
+
 </script>
 
 <template>
-  <div>
+  <div class="dark:bg-gray-400">
     <search-header :keyword="keyword" @search="search"></search-header>
 
     <div class="max-w-[1240px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_400px] gap-8">
@@ -172,9 +172,12 @@ onMounted(() => {
         <div class="py-3">
           <ul class="flex flex-row gap-3 flex-wrap">
             <li v-for="(item,i) in tabsOptions" :key="i">
-              <el-check-tag :checked="item.value === currentTabValue" @click="handleChangeTab(item.value)"
-                            type="success">
-                <div class="flex flex-row items-center">
+              <el-check-tag
+                  class="dark:bg-gray-950"
+                  :checked="item.value === currentTabValue"
+                  @click="handleChangeTab(item.value)"
+                  type="success">
+                <div class="flex flex-row items-center ">
                   <span class="text-[10px] md:text-[14px]">{{ item.label }}</span>
                 </div>
               </el-check-tag>
@@ -209,16 +212,19 @@ onMounted(() => {
         <div class="py-[40px] flex justify-center">
           <client-only>
             <el-pagination
+                background
+                :current-page="page"
+                :page-size="10"
                 layout="prev, pager, next"
                 @current-change="handleCurrentPageChange"
                 :total="sources?.total"
-            ></el-pagination>
+            />
           </client-only>
 
         </div>
       </div>
       <div class="p-[20px] sm:py-[20px]">
-        <div class="bg-white shadow p-[14px] rounded-[6px]">
+        <div class="bg-white dark:bg-transparent dark:shadow-gray-500 shadow p-[14px] rounded-[6px]">
           <div class="flex flex-row justify-between items-center">
             <span class="text-[14px] font-bold">最近更新</span>
             <div>
@@ -230,7 +236,7 @@ onMounted(() => {
             <el-skeleton animated :loading="latestSkeletonLoading" :count="10">
               <template #template>
                 <div
-                    class="bg-white shadow p-[14px] rounded-[6px] cursor-pointer mb-3
+                    class="bg-white dark:bg-gray-600 shadow p-[14px] rounded-[6px] cursor-pointer mb-3
                 hover:bg-[#f5f5f5] hover:shadow-lg transition duration-300 ease-in-out"
                 >
                   <div class="flex flex-row gap-2 items-center">
@@ -241,8 +247,8 @@ onMounted(() => {
               </template>
               <template #default>
                 <div
-                    class="bg-white shadow p-[14px] rounded-[6px] cursor-pointer
-                hover:bg-[#f5f5f5] hover:shadow-lg transition duration-300 ease-in-out"
+                    class="bg-white dark:bg-gray-600 shadow p-[14px] rounded-[6px] cursor-pointer
+                hover:bg-[#f5f5f5] dark:hover:bg-gray-700 hover:shadow-lg transition duration-300 ease-in-out"
                     v-for="(item,i) in latestSourcesData?.list ? latestSourcesData?.list : latestSourcesData" :key="i"
                     @click="handleOpenLatestSourceLink(item)"
                 >
@@ -254,7 +260,9 @@ onMounted(() => {
                     <img class="w-[20px]" v-if="item.disk_type === 'BDY'" src="@/assets/netdisk/baidu.png" alt="baidu">
                     <img class="w-[20px]" v-if="item.disk_type === 'XUNLEI'" src="@/assets/netdisk/xunlei.png"
                          alt="xunlei">
-                    <span class="text-[14px] font-inter break-words truncate">{{ item.disk_name }}</span>
+                    <span class="text-[14px] font-inter break-words truncate dark:text-slate-200">{{
+                        item.disk_name
+                      }}</span>
                   </div>
                 </div>
               </template>
@@ -265,6 +273,7 @@ onMounted(() => {
 
       </div>
     </div>
+    <el-backtop></el-backtop>
   </div>
 </template>
 
